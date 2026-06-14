@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern Todo App</title>
+<title>Modern Neon Todo</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -12,24 +12,35 @@
     width: 6px;
 }
 ::-webkit-scrollbar-thumb {
-    background: #4b5563;
+    background: #22d3ee;
     border-radius: 10px;
 }
+
 .task-completed {
     text-decoration: line-through;
-    opacity: 0.6;
+    opacity: 0.5;
+}
+
+.glow {
+    box-shadow: 0 0 18px rgba(34,211,238,0.25),
+                0 0 35px rgba(168,85,247,0.25);
 }
 </style>
 </head>
 
-<body class="bg-slate-950 min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4 
+bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
 
-<div class="w-full max-w-2xl bg-slate-900 rounded-2xl shadow-2xl p-6">
+<div class="w-full max-w-2xl rounded-3xl p-6
+bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl">
 
     <!-- Header -->
     <div class="text-center mb-6">
-        <h1 class="text-4xl font-bold text-white">📝 Todo App</h1>
-        <p class="text-slate-400 mt-2">Stay organized and productive</p>
+        <h1 class="text-4xl font-extrabold bg-gradient-to-r 
+        from-cyan-300 via-purple-300 to-fuchsia-300 bg-clip-text text-transparent">
+            🧠 Neon Todo
+        </h1>
+        <p class="text-slate-300 mt-2">Clean focus. Modern vibes.</p>
     </div>
 
     <!-- Input -->
@@ -37,42 +48,49 @@
         <input
             id="taskInput"
             type="text"
-            placeholder="Enter a task..."
-            class="flex-1 bg-slate-800 text-white px-4 py-3 rounded-xl outline-none border border-slate-700 focus:border-blue-500"
+            placeholder="Write your task..."
+            class="flex-1 px-4 py-3 rounded-xl outline-none
+            bg-slate-900/60 text-white border border-white/10
+            focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30"
         />
 
         <button
             id="addBtn"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold transition">
+            class="glow px-6 py-3 rounded-xl font-semibold text-white
+            bg-gradient-to-r from-cyan-500 via-purple-600 to-fuchsia-600
+            hover:scale-105 transition-all duration-300">
             Add
         </button>
     </div>
 
     <!-- Filters -->
-    <div class="flex flex-wrap justify-center gap-2 mb-6">
-        <button class="filter-btn bg-blue-600 text-white px-4 py-2 rounded-lg" data-filter="all">
+    <div class="flex justify-center gap-2 mb-6">
+        <button class="filter-btn px-4 py-2 rounded-lg
+        bg-cyan-500 text-white" data-filter="all">
             All
         </button>
 
-        <button class="filter-btn bg-slate-800 text-slate-300 px-4 py-2 rounded-lg" data-filter="active">
+        <button class="filter-btn px-4 py-2 rounded-lg
+        bg-white/10 text-slate-200 hover:bg-white/20" data-filter="active">
             Active
         </button>
 
-        <button class="filter-btn bg-slate-800 text-slate-300 px-4 py-2 rounded-lg" data-filter="completed">
+        <button class="filter-btn px-4 py-2 rounded-lg
+        bg-white/10 text-slate-200 hover:bg-white/20" data-filter="completed">
             Completed
         </button>
     </div>
 
     <!-- Stats -->
-    <div class="flex justify-between text-sm text-slate-400 mb-4">
+    <div class="flex justify-between text-sm text-slate-300 mb-4">
         <span id="taskCount">0 tasks</span>
-        <button id="clearCompleted" class="text-red-400 hover:text-red-300">
+        <button id="clearCompleted" class="text-pink-400 hover:text-pink-300">
             Clear Completed
         </button>
     </div>
 
-    <!-- Task List -->
-    <div id="taskList" class="space-y-3 max-h-[400px] overflow-y-auto"></div>
+    <!-- Tasks -->
+    <div id="taskList" class="space-y-3 max-h-[420px] overflow-y-auto"></div>
 
 </div>
 
@@ -91,51 +109,45 @@ function saveTasks() {
 }
 
 function updateCount() {
-    const activeTasks = tasks.filter(task => !task.completed).length;
-    taskCount.textContent =
-        `${activeTasks} active task${activeTasks !== 1 ? "s" : ""}`;
+    const active = tasks.filter(t => !t.completed).length;
+    taskCount.textContent = `${active} active task${active !== 1 ? "s" : ""}`;
 }
 
 function renderTasks() {
-
     taskList.innerHTML = "";
 
-    let filteredTasks = tasks;
+    let filtered = tasks;
 
     if (currentFilter === "active") {
-        filteredTasks = tasks.filter(t => !t.completed);
+        filtered = tasks.filter(t => !t.completed);
+    } else if (currentFilter === "completed") {
+        filtered = tasks.filter(t => t.completed);
     }
 
-    if (currentFilter === "completed") {
-        filteredTasks = tasks.filter(t => t.completed);
-    }
-
-    if (filteredTasks.length === 0) {
+    if (filtered.length === 0) {
         taskList.innerHTML = `
-            <div class="text-center text-slate-500 py-8">
+            <div class="text-center text-slate-400 py-8">
                 No tasks found
-            </div>
-        `;
+            </div>`;
     }
 
-    filteredTasks.forEach(task => {
-
+    filtered.forEach(task => {
         const div = document.createElement("div");
 
         div.className =
-            "bg-slate-800 p-4 rounded-xl flex items-center justify-between gap-3";
+        "flex items-center justify-between gap-3 p-4 rounded-xl " +
+        "bg-slate-900/60 border border-white/10 backdrop-blur-md";
 
         div.innerHTML = `
             <div class="flex items-center gap-3 flex-1">
 
-                <input
-                    type="checkbox"
+                <input type="checkbox"
                     ${task.completed ? "checked" : ""}
                     onchange="toggleTask(${task.id})"
-                    class="w-5 h-5 accent-blue-500"
-                >
+                    class="w-5 h-5 accent-cyan-400"
+                />
 
-                <span class="text-white break-all flex-1 ${
+                <span class="text-slate-100 break-all flex-1 ${
                     task.completed ? "task-completed" : ""
                 }">
                     ${escapeHtml(task.text)}
@@ -143,15 +155,15 @@ function renderTasks() {
             </div>
 
             <div class="flex gap-2">
-                <button
-                    onclick="editTask(${task.id})"
-                    class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg">
+                <button onclick="editTask(${task.id})"
+                    class="px-3 py-1 rounded-lg text-black font-medium
+                    bg-cyan-300 hover:bg-cyan-200">
                     Edit
                 </button>
 
-                <button
-                    onclick="deleteTask(${task.id})"
-                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg">
+                <button onclick="deleteTask(${task.id})"
+                    class="px-3 py-1 rounded-lg text-white
+                    bg-pink-600 hover:bg-pink-500">
                     Delete
                 </button>
             </div>
@@ -165,9 +177,7 @@ function renderTasks() {
 }
 
 function addTask() {
-
     const text = taskInput.value.trim();
-
     if (!text) return;
 
     tasks.unshift({
@@ -181,36 +191,23 @@ function addTask() {
 }
 
 function toggleTask(id) {
-
-    tasks = tasks.map(task =>
-        task.id === id
-            ? { ...task, completed: !task.completed }
-            : task
+    tasks = tasks.map(t =>
+        t.id === id ? { ...t, completed: !t.completed } : t
     );
-
     renderTasks();
 }
 
 function deleteTask(id) {
-
-    tasks = tasks.filter(task => task.id !== id);
+    tasks = tasks.filter(t => t.id !== id);
     renderTasks();
 }
 
 function editTask(id) {
-
     const task = tasks.find(t => t.id === id);
+    const updated = prompt("Edit task:", task.text);
 
-    const newText = prompt("Edit task:", task.text);
-
-    if (newText === null) return;
-
-    const trimmed = newText.trim();
-
-    if (!trimmed) return;
-
-    task.text = trimmed;
-
+    if (!updated) return;
+    task.text = updated.trim();
     renderTasks();
 }
 
@@ -220,33 +217,29 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-clearCompleted.addEventListener("click", () => {
-    tasks = tasks.filter(task => !task.completed);
-    renderTasks();
-});
-
-addBtn.addEventListener("click", addTask);
-
-taskInput.addEventListener("keypress", (e) => {
+addBtn.onclick = addTask;
+taskInput.addEventListener("keypress", e => {
     if (e.key === "Enter") addTask();
 });
 
+clearCompleted.onclick = () => {
+    tasks = tasks.filter(t => !t.completed);
+    renderTasks();
+};
+
 document.querySelectorAll(".filter-btn").forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
+    btn.onclick = () => {
         document.querySelectorAll(".filter-btn").forEach(b => {
-            b.classList.remove("bg-blue-600", "text-white");
-            b.classList.add("bg-slate-800", "text-slate-300");
+            b.className =
+            "filter-btn px-4 py-2 rounded-lg bg-white/10 text-slate-200 hover:bg-white/20";
         });
 
-        btn.classList.remove("bg-slate-800", "text-slate-300");
-        btn.classList.add("bg-blue-600", "text-white");
+        btn.className =
+        "filter-btn px-4 py-2 rounded-lg bg-cyan-500 text-white";
 
         currentFilter = btn.dataset.filter;
-
         renderTasks();
-    });
+    };
 });
 
 renderTasks();
