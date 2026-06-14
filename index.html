@@ -3,246 +3,223 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modern Neon Todo</title>
+<title>Neon Todo Pro</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-thumb {
-    background: #22d3ee;
-    border-radius: 10px;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #22d3ee; border-radius: 10px; }
 
-.task-completed {
-    text-decoration: line-through;
-    opacity: 0.5;
-}
+.task-completed { text-decoration: line-through; opacity: 0.5; }
 
 .glow {
-    box-shadow: 0 0 18px rgba(34,211,238,0.25),
-                0 0 35px rgba(168,85,247,0.25);
+  box-shadow: 0 0 18px rgba(34,211,238,0.25),
+              0 0 35px rgba(168,85,247,0.25);
 }
 </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4 
+<body class="min-h-screen flex items-center justify-center p-4
 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
 
-<div class="w-full max-w-2xl rounded-3xl p-6
-bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl">
+<div class="w-full max-w-3xl rounded-3xl p-6
+bg-white/5 backdrop-blur-2xl border border-white/10">
 
-    <!-- Header -->
-    <div class="text-center mb-6">
-        <h1 class="text-4xl font-extrabold bg-gradient-to-r 
-        from-cyan-300 via-purple-300 to-fuchsia-300 bg-clip-text text-transparent">
-            🧠 Modern Featured Todo Application
-        </h1>
-        <p class="text-slate-300 mt-2">Clean focus. Modern vibes.</p>
-    </div>
+<!-- Header -->
+<div class="text-center mb-5">
+  <h1 class="text-4xl font-extrabold text-transparent bg-clip-text
+  bg-gradient-to-r from-cyan-300 via-purple-300 to-fuchsia-300">
+    ⚡ Todo Pro
+  </h1>
+</div>
 
-    <!-- Input -->
-    <div class="flex gap-2 mb-6">
-        <input
-            id="taskInput"
-            type="text"
-            placeholder="Write your task..."
-            class="flex-1 px-4 py-3 rounded-xl outline-none
-            bg-slate-900/60 text-white border border-white/10
-            focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/30"
-        />
+<!-- INPUT ROW -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
 
-        <button
-            id="addBtn"
-            class="glow px-6 py-3 rounded-xl font-semibold text-white
-            bg-gradient-to-r from-cyan-500 via-purple-600 to-fuchsia-600
-            hover:scale-105 transition-all duration-300">
-            Add
-        </button>
-    </div>
+  <input id="taskInput" placeholder="Task..."
+  class="md:col-span-2 px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
 
-    <!-- Filters -->
-    <div class="flex justify-center gap-2 mb-6">
-        <button class="filter-btn px-4 py-2 rounded-lg
-        bg-cyan-500 text-white" data-filter="all">
-            All
-        </button>
+  <input id="dateInput" type="date"
+  class="px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
 
-        <button class="filter-btn px-4 py-2 rounded-lg
-        bg-white/10 text-slate-200 hover:bg-white/20" data-filter="active">
-            Active
-        </button>
+  <select id="priorityInput"
+  class="px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
+    <option value="low">Low</option>
+    <option value="medium" selected>Medium</option>
+    <option value="high">High</option>
+  </select>
 
-        <button class="filter-btn px-4 py-2 rounded-lg
-        bg-white/10 text-slate-200 hover:bg-white/20" data-filter="completed">
-            Completed
-        </button>
-    </div>
+  <button id="addBtn"
+  class="glow bg-gradient-to-r from-cyan-500 to-fuchsia-600 text-white rounded-lg">
+    Add
+  </button>
 
-    <!-- Stats -->
-    <div class="flex justify-between text-sm text-slate-300 mb-4">
-        <span id="taskCount">0 tasks</span>
-        <button id="clearCompleted" class="text-pink-400 hover:text-pink-300">
-            Clear Completed
-        </button>
-    </div>
+</div>
 
-    <!-- Tasks -->
-    <div id="taskList" class="space-y-3 max-h-[420px] overflow-y-auto"></div>
+<!-- SEARCH + SORT -->
+<div class="flex flex-col md:flex-row gap-2 mb-4">
+
+  <input id="searchInput" placeholder="Search tasks..."
+  class="flex-1 px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
+
+  <select id="sortInput"
+  class="px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
+    <option value="newest">Newest</option>
+    <option value="oldest">Oldest</option>
+    <option value="priority">Priority</option>
+  </select>
+
+</div>
+
+<!-- FILTERS -->
+<div class="flex gap-2 mb-4">
+  <button class="filter bg-cyan-500 px-3 py-1 rounded" data="all">All</button>
+  <button class="filter bg-white/10 px-3 py-1 rounded" data="active">Active</button>
+  <button class="filter bg-white/10 px-3 py-1 rounded" data="done">Done</button>
+</div>
+
+<!-- STATS -->
+<div class="flex justify-between text-sm text-slate-300 mb-3">
+  <span id="stats">0 tasks</span>
+  <button id="clearDone" class="text-pink-400">Clear Done</button>
+</div>
+
+<!-- LIST -->
+<div id="list" class="space-y-2 max-h-[420px] overflow-y-auto"></div>
 
 </div>
 
 <script>
 let tasks = JSON.parse(localStorage.getItem("todos")) || [];
-let currentFilter = "all";
+let filter = "all";
 
-const taskInput = document.getElementById("taskInput");
-const taskList = document.getElementById("taskList");
-const taskCount = document.getElementById("taskCount");
-const addBtn = document.getElementById("addBtn");
-const clearCompleted = document.getElementById("clearCompleted");
+const el = id => document.getElementById(id);
 
-function saveTasks() {
-    localStorage.setItem("todos", JSON.stringify(tasks));
-}
-
-function updateCount() {
-    const active = tasks.filter(t => !t.completed).length;
-    taskCount.textContent = `${active} active task${active !== 1 ? "s" : ""}`;
-}
-
-function renderTasks() {
-    taskList.innerHTML = "";
-
-    let filtered = tasks;
-
-    if (currentFilter === "active") {
-        filtered = tasks.filter(t => !t.completed);
-    } else if (currentFilter === "completed") {
-        filtered = tasks.filter(t => t.completed);
-    }
-
-    if (filtered.length === 0) {
-        taskList.innerHTML = `
-            <div class="text-center text-slate-400 py-8">
-                No tasks found
-            </div>`;
-    }
-
-    filtered.forEach(task => {
-        const div = document.createElement("div");
-
-        div.className =
-        "flex items-center justify-between gap-3 p-4 rounded-xl " +
-        "bg-slate-900/60 border border-white/10 backdrop-blur-md";
-
-        div.innerHTML = `
-            <div class="flex items-center gap-3 flex-1">
-
-                <input type="checkbox"
-                    ${task.completed ? "checked" : ""}
-                    onchange="toggleTask(${task.id})"
-                    class="w-5 h-5 accent-cyan-400"
-                />
-
-                <span class="text-slate-100 break-all flex-1 ${
-                    task.completed ? "task-completed" : ""
-                }">
-                    ${escapeHtml(task.text)}
-                </span>
-            </div>
-
-            <div class="flex gap-2">
-                <button onclick="editTask(${task.id})"
-                    class="px-3 py-1 rounded-lg text-black font-medium
-                    bg-cyan-300 hover:bg-cyan-200">
-                    Edit
-                </button>
-
-                <button onclick="deleteTask(${task.id})"
-                    class="px-3 py-1 rounded-lg text-white
-                    bg-pink-600 hover:bg-pink-500">
-                    Delete
-                </button>
-            </div>
-        `;
-
-        taskList.appendChild(div);
-    });
-
-    updateCount();
-    saveTasks();
+function save() {
+  localStorage.setItem("todos", JSON.stringify(tasks));
 }
 
 function addTask() {
-    const text = taskInput.value.trim();
-    if (!text) return;
+  if (!el("taskInput").value.trim()) return;
 
-    tasks.unshift({
-        id: Date.now(),
-        text,
-        completed: false
-    });
+  tasks.unshift({
+    id: Date.now(),
+    text: el("taskInput").value,
+    date: el("dateInput").value,
+    priority: el("priorityInput").value,
+    done: false,
+    pinned: false
+  });
 
-    taskInput.value = "";
-    renderTasks();
+  el("taskInput").value = "";
+  render();
 }
 
-function toggleTask(id) {
-    tasks = tasks.map(t =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-    );
-    renderTasks();
+function toggle(id) {
+  tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
+  render();
 }
 
-function deleteTask(id) {
-    tasks = tasks.filter(t => t.id !== id);
-    renderTasks();
+function del(id) {
+  tasks = tasks.filter(t => t.id !== id);
+  render();
 }
 
-function editTask(id) {
-    const task = tasks.find(t => t.id === id);
-    const updated = prompt("Edit task:", task.text);
-
-    if (!updated) return;
-    task.text = updated.trim();
-    renderTasks();
+function pin(id) {
+  tasks = tasks.map(t => t.id === id ? {...t, pinned: !t.pinned} : t);
+  render();
 }
 
-function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
+function edit(id, value) {
+  tasks = tasks.map(t => t.id === id ? {...t, text: value} : t);
+  render();
 }
 
-addBtn.onclick = addTask;
-taskInput.addEventListener("keypress", e => {
-    if (e.key === "Enter") addTask();
-});
+function render() {
 
-clearCompleted.onclick = () => {
-    tasks = tasks.filter(t => !t.completed);
-    renderTasks();
+  let list = [...tasks];
+
+  const search = el("searchInput").value.toLowerCase();
+
+  if (search)
+    list = list.filter(t => t.text.toLowerCase().includes(search));
+
+  if (filter === "active") list = list.filter(t => !t.done);
+  if (filter === "done") list = list.filter(t => t.done);
+
+  const sort = el("sortInput").value;
+
+  if (sort === "newest") list.sort((a,b)=>b.id-a.id);
+  if (sort === "oldest") list.sort((a,b)=>a.id-b.id);
+  if (sort === "priority") {
+    const p = {high:3, medium:2, low:1};
+    list.sort((a,b)=>p[b.priority]-p[a.priority]);
+  }
+
+  list.sort((a,b)=>b.pinned - a.pinned);
+
+  el("list").innerHTML = list.map(t => `
+    <div class="p-3 rounded-lg bg-slate-900/60 border border-white/10">
+
+      <div class="flex justify-between items-center">
+
+        <div class="flex gap-2 items-center flex-1">
+
+          <input type="checkbox" ${t.done ? "checked":""}
+          onchange="toggle(${t.id})" class="accent-cyan-400">
+
+          <input value="${t.text}"
+          onblur="edit(${t.id}, this.value)"
+          class="bg-transparent text-white w-full outline-none ${t.done?'task-completed':''}">
+        </div>
+
+        <div class="flex gap-2">
+
+          <button onclick="pin(${t.id})"
+          class="text-xs px-2 py-1 rounded bg-purple-600">
+            📌
+          </button>
+
+          <button onclick="del(${t.id})"
+          class="text-xs px-2 py-1 rounded bg-pink-600">
+            ✖
+          </button>
+
+        </div>
+      </div>
+
+      <div class="text-xs text-slate-400 mt-1 flex justify-between">
+        <span>📅 ${t.date || "No date"}</span>
+        <span>⚡ ${t.priority}</span>
+      </div>
+
+    </div>
+  `).join("");
+
+  el("stats").innerText = `${tasks.filter(t=>!t.done).length} active / ${tasks.length} total`;
+  save();
+}
+
+document.getElementById("addBtn").onclick = addTask;
+document.getElementById("searchInput").oninput = render;
+document.getElementById("sortInput").onchange = render;
+
+document.getElementById("clearDone").onclick = () => {
+  tasks = tasks.filter(t => !t.done);
+  render();
 };
 
-document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.onclick = () => {
-        document.querySelectorAll(".filter-btn").forEach(b => {
-            b.className =
-            "filter-btn px-4 py-2 rounded-lg bg-white/10 text-slate-200 hover:bg-white/20";
-        });
-
-        btn.className =
-        "filter-btn px-4 py-2 rounded-lg bg-cyan-500 text-white";
-
-        currentFilter = btn.dataset.filter;
-        renderTasks();
-    };
+document.querySelectorAll(".filter").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll(".filter").forEach(x=>x.className="filter bg-white/10 px-3 py-1 rounded");
+    b.className="filter bg-cyan-500 px-3 py-1 rounded";
+    filter = b.getAttribute("data");
+    render();
+  }
 });
 
-renderTasks();
+render();
 </script>
 
 </body>
