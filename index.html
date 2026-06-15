@@ -3,223 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon Todo Pro</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
+<title>Calculator</title>
 
 <style>
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-thumb { background: #22d3ee; border-radius: 10px; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
 
-.task-completed { text-decoration: line-through; opacity: 0.5; }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
 
-.glow {
-  box-shadow: 0 0 18px rgba(34,211,238,0.25),
-              0 0 35px rgba(168,85,247,0.25);
-}
+    .calculator {
+        width: 320px;
+        background: #222;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .display {
+        width: 100%;
+        height: 70px;
+        border: none;
+        outline: none;
+        background: #111;
+        color: white;
+        font-size: 2rem;
+        text-align: right;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    button {
+        height: 60px;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    .number {
+        background: #444;
+        color: white;
+    }
+
+    .operator {
+        background: #ff9500;
+        color: white;
+    }
+
+    .clear {
+        background: #ff3b30;
+        color: white;
+    }
+
+    .equal {
+        background: #34c759;
+        color: white;
+        grid-column: span 2;
+    }
 </style>
 </head>
+<body>
 
-<body class="min-h-screen flex items-center justify-center p-4
-bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900">
+<div class="calculator">
+    <input type="text" class="display" id="display" readonly>
 
-<div class="w-full max-w-3xl rounded-3xl p-6
-bg-white/5 backdrop-blur-2xl border border-white/10">
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button class="operator" onclick="appendValue('/')">/</button>
+        <button class="operator" onclick="appendValue('*')">×</button>
+        <button class="operator" onclick="appendValue('-')">−</button>
 
-<!-- Header -->
-<div class="text-center mb-5">
-  <h1 class="text-4xl font-extrabold text-transparent bg-clip-text
-  bg-gradient-to-r from-cyan-300 via-purple-300 to-fuchsia-300">
-    ⚡ Modern Todo Application Pro
-  </h1>
-</div>
+        <button class="number" onclick="appendValue('7')">7</button>
+        <button class="number" onclick="appendValue('8')">8</button>
+        <button class="number" onclick="appendValue('9')">9</button>
+        <button class="operator" onclick="appendValue('+')">+</button>
 
-<!-- INPUT ROW -->
-<div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-4">
+        <button class="number" onclick="appendValue('4')">4</button>
+        <button class="number" onclick="appendValue('5')">5</button>
+        <button class="number" onclick="appendValue('6')">6</button>
+        <button class="operator" onclick="appendValue('%')">%</button>
 
-  <input id="taskInput" placeholder="Task..."
-  class="md:col-span-2 px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
+        <button class="number" onclick="appendValue('1')">1</button>
+        <button class="number" onclick="appendValue('2')">2</button>
+        <button class="number" onclick="appendValue('3')">3</button>
+        <button class="operator" onclick="deleteLast()">⌫</button>
 
-  <input id="dateInput" type="date"
-  class="px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
-
-  <select id="priorityInput"
-  class="px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
-    <option value="low">Low</option>
-    <option value="medium" selected>Medium</option>
-    <option value="high">High</option>
-  </select>
-
-  <button id="addBtn"
-  class="glow bg-gradient-to-r from-cyan-500 to-fuchsia-600 text-white rounded-lg">
-    Add
-  </button>
-
-</div>
-
-<!-- SEARCH + SORT -->
-<div class="flex flex-col md:flex-row gap-2 mb-4">
-
-  <input id="searchInput" placeholder="Search tasks..."
-  class="flex-1 px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
-
-  <select id="sortInput"
-  class="px-3 py-2 rounded-lg bg-slate-900/60 text-white border border-white/10">
-    <option value="newest">Newest</option>
-    <option value="oldest">Oldest</option>
-    <option value="priority">Priority</option>
-  </select>
-
-</div>
-
-<!-- FILTERS -->
-<div class="flex gap-2 mb-4">
-  <button class="filter bg-cyan-500 px-3 py-1 rounded" data="all">All</button>
-  <button class="filter bg-white/10 px-3 py-1 rounded" data="active">Active</button>
-  <button class="filter bg-white/10 px-3 py-1 rounded" data="done">Done</button>
-</div>
-
-<!-- STATS -->
-<div class="flex justify-between text-sm text-slate-300 mb-3">
-  <span id="stats">0 tasks</span>
-  <button id="clearDone" class="text-pink-400">Clear Done</button>
-</div>
-
-<!-- LIST -->
-<div id="list" class="space-y-2 max-h-[420px] overflow-y-auto"></div>
-
+        <button class="number" onclick="appendValue('0')">0</button>
+        <button class="number" onclick="appendValue('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
 </div>
 
 <script>
-let tasks = JSON.parse(localStorage.getItem("todos")) || [];
-let filter = "all";
+    const display = document.getElementById("display");
 
-const el = id => document.getElementById(id);
+    function appendValue(value) {
+        display.value += value;
+    }
 
-function save() {
-  localStorage.setItem("todos", JSON.stringify(tasks));
-}
+    function clearDisplay() {
+        display.value = "";
+    }
 
-function addTask() {
-  if (!el("taskInput").value.trim()) return;
+    function deleteLast() {
+        display.value = display.value.slice(0, -1);
+    }
 
-  tasks.unshift({
-    id: Date.now(),
-    text: el("taskInput").value,
-    date: el("dateInput").value,
-    priority: el("priorityInput").value,
-    done: false,
-    pinned: false
-  });
+    function calculate() {
+        try {
+            display.value = eval(display.value);
+        } catch {
+            display.value = "Error";
+        }
+    }
 
-  el("taskInput").value = "";
-  render();
-}
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+        const allowed = "0123456789+-*/.%";
 
-function toggle(id) {
-  tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
-  render();
-}
-
-function del(id) {
-  tasks = tasks.filter(t => t.id !== id);
-  render();
-}
-
-function pin(id) {
-  tasks = tasks.map(t => t.id === id ? {...t, pinned: !t.pinned} : t);
-  render();
-}
-
-function edit(id, value) {
-  tasks = tasks.map(t => t.id === id ? {...t, text: value} : t);
-  render();
-}
-
-function render() {
-
-  let list = [...tasks];
-
-  const search = el("searchInput").value.toLowerCase();
-
-  if (search)
-    list = list.filter(t => t.text.toLowerCase().includes(search));
-
-  if (filter === "active") list = list.filter(t => !t.done);
-  if (filter === "done") list = list.filter(t => t.done);
-
-  const sort = el("sortInput").value;
-
-  if (sort === "newest") list.sort((a,b)=>b.id-a.id);
-  if (sort === "oldest") list.sort((a,b)=>a.id-b.id);
-  if (sort === "priority") {
-    const p = {high:3, medium:2, low:1};
-    list.sort((a,b)=>p[b.priority]-p[a.priority]);
-  }
-
-  list.sort((a,b)=>b.pinned - a.pinned);
-
-  el("list").innerHTML = list.map(t => `
-    <div class="p-3 rounded-lg bg-slate-900/60 border border-white/10">
-
-      <div class="flex justify-between items-center">
-
-        <div class="flex gap-2 items-center flex-1">
-
-          <input type="checkbox" ${t.done ? "checked":""}
-          onchange="toggle(${t.id})" class="accent-cyan-400">
-
-          <input value="${t.text}"
-          onblur="edit(${t.id}, this.value)"
-          class="bg-transparent text-white w-full outline-none ${t.done?'task-completed':''}">
-        </div>
-
-        <div class="flex gap-2">
-
-          <button onclick="pin(${t.id})"
-          class="text-xs px-2 py-1 rounded bg-purple-600">
-            📌
-          </button>
-
-          <button onclick="del(${t.id})"
-          class="text-xs px-2 py-1 rounded bg-pink-600">
-            ✖
-          </button>
-
-        </div>
-      </div>
-
-      <div class="text-xs text-slate-400 mt-1 flex justify-between">
-        <span>📅 ${t.date || "No date"}</span>
-        <span>⚡ ${t.priority}</span>
-      </div>
-
-    </div>
-  `).join("");
-
-  el("stats").innerText = `${tasks.filter(t=>!t.done).length} active / ${tasks.length} total`;
-  save();
-}
-
-document.getElementById("addBtn").onclick = addTask;
-document.getElementById("searchInput").oninput = render;
-document.getElementById("sortInput").onchange = render;
-
-document.getElementById("clearDone").onclick = () => {
-  tasks = tasks.filter(t => !t.done);
-  render();
-};
-
-document.querySelectorAll(".filter").forEach(b=>{
-  b.onclick = ()=>{
-    document.querySelectorAll(".filter").forEach(x=>x.className="filter bg-white/10 px-3 py-1 rounded");
-    b.className="filter bg-cyan-500 px-3 py-1 rounded";
-    filter = b.getAttribute("data");
-    render();
-  }
-});
-
-render();
+        if (allowed.includes(e.key)) {
+            appendValue(e.key);
+        } else if (e.key === "Enter") {
+            calculate();
+        } else if (e.key === "Backspace") {
+            deleteLast();
+        } else if (e.key === "Escape") {
+            clearDisplay();
+        }
+    });
 </script>
 
 </body>
