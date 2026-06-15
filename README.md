@@ -5,7 +5,6 @@ This project demonstrates a **simple automated CI/CD pipeline without GitHub Act
 - Git (version control)
 - Cron (automation)
 - Nginx (web server)
-- Node.js build system (optional)
 - Ubuntu server
 
 ---
