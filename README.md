@@ -209,3 +209,29 @@ fi
 echo "$(date): Deployment successful" >> "$LOG"
 echo "==============================" >> "$LOG"
 ```
+
+## NGINX config 
+
+use this for separate out multiple sites
+```
+nano /etc/nginx/sites-enabled
+```
+```
+# save this entry to nano /etc/hosts :  127.0.0.1 myapp.local
+server {
+    listen 80;
+    server_name myapp.local;
+
+    root /var/www/html/myapp;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+```
+
+
+
+
